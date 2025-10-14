@@ -1,6 +1,6 @@
 ---
 title: "Markdown 문법 가이드"
-date: 2025-10-16 10:00:00 +0900
+date: 2025-10-14 10:00:00 +0900
 categories: [Development, Guide]
 tags: [markdown, writing, documentation]
 description: "블로그 포스트 작성에 필요한 Markdown 문법을 예제와 함께 알아봅니다."

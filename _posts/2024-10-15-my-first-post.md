@@ -1,6 +1,6 @@
 ---
 title: "첫 번째 포스트: Jekyll 블로그 시작"
-date: 2025-10-15 14:30:00 +0900
+date: 2024-10-15 14:30:00 +0900
 categories: [Blogging, Tutorial]
 tags: [jekyll, chirpy, github-pages]
 description: "Jekyll과 Chirpy 테마로 GitHub Pages에 블로그를 만드는 방법을 소개합니다."

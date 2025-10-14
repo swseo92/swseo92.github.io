@@ -1,6 +1,6 @@
 ---
 title: "내가 사용하는 기술 스택"
-date: 2025-10-17 09:00:00 +0900
+date: 2025-10-15 09:00:00 +0900
 categories: [Development, Tools]
 tags: [tech-stack, productivity, development]
 description: "개발에 사용하는 주요 기술 스택과 도구들을 정리했습니다."
