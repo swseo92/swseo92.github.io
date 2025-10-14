@@ -1,0 +1,327 @@
+# Jekyll Post Front Matter Schema
+# Project: 001-github-jekyll-chirpy
+# Date: 2025-10-15
+# Purpose: Define the structure and validation rules for blog post metadata
+
+schema_version: "1.0"
+description: "Front Matter schema for Jekyll blog posts with Chirpy theme"
+
+# Required fields
+required:
+  - title
+  - date
+
+# Field definitions
+fields:
+  title:
+    type: string
+    required: true
+    description: "Post title displayed in browser and post list"
+    constraints:
+      min_length: 1
+      max_length: 200
+    examples:
+      - "Getting Started with Jekyll"
+      - "Jekyll 블로그 시작하기"
+    validation:
+      pattern: ".+"  # Non-empty string
+      error_message: "Title must not be empty"
+
+  date:
+    type: datetime
+    required: true
+    description: "Publication date and time with timezone"
+    format: "YYYY-MM-DD HH:MM:SS +HHMM"
+    examples:
+      - "2025-10-15 14:30:00 +0900"
+      - "2025-10-15 09:00:00 +0000"
+    validation:
+      pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2} [+-]\\d{4}$"
+      error_message: "Date must be in format YYYY-MM-DD HH:MM:SS +HHMM"
+    notes:
+      - "Timezone is important for correct sorting"
+      - "Future dates will be excluded from build"
+
+  categories:
+    type: array
+    item_type: string
+    required: false
+    description: "Hierarchical topic classification"
+    constraints:
+      max_items: 2
+      recommended_items: 2
+    examples:
+      - ["Backend", "Python"]
+      - ["Frontend"]
+      - ["DevOps", "Docker"]
+    validation:
+      pattern: "^[A-Za-z0-9가-힣\\s-]+$"  # Alphanumeric + Korean + space/hyphen
+      error_message: "Category names should be alphanumeric"
+    notes:
+      - "First item is parent category, second is child"
+      - "URLs are auto-generated: /categories/{category-name}/"
+      - "Korean categories are auto-encoded in URLs"
+
+  tags:
+    type: array
+    item_type: string
+    required: false
+    description: "Keyword-based classification for detailed indexing"
+    constraints:
+      min_items: 0
+      max_items: null  # No limit
+      recommended_items: 3-7
+    examples:
+      - ["python", "django", "api"]
+      - ["javascript", "react", "hooks"]
+    validation:
+      pattern: "^[a-z0-9가-힣-]+$"  # Lowercase alphanumeric + Korean + hyphen
+      error_message: "Tags should be lowercase alphanumeric with hyphens"
+    notes:
+      - "Use lowercase for consistency"
+      - "Use hyphens for multi-word tags (e.g., 'web-development')"
+      - "URLs are auto-generated: /tags/{tag-name}/"
+
+  author:
+    type: string
+    required: false
+    description: "Author ID referencing _data/authors.yml"
+    default: "social.name from _config.yml"
+    examples:
+      - "cotes"
+      - "john_doe"
+    validation:
+      pattern: "^[a-z0-9_-]+$"
+      error_message: "Author ID should be lowercase alphanumeric with underscores/hyphens"
+    notes:
+      - "Must be defined in _data/authors.yml"
+      - "If omitted, uses global author from _config.yml"
+
+  description:
+    type: string
+    required: false
+    description: "Post summary for SEO and social media previews"
+    constraints:
+      min_length: 50
+      max_length: 160
+      recommended_length: 150-160
+    examples:
+      - "Learn how to set up a Jekyll blog with Chirpy theme and deploy it to GitHub Pages in under 2 hours."
+    validation:
+      pattern: ".{50,160}"
+      error_message: "Description should be 50-160 characters for optimal SEO"
+    notes:
+      - "Used in meta tags for search engines"
+      - "Displayed in social media shares (Open Graph, Twitter Card)"
+
+  image:
+    type: object
+    required: false
+    description: "Featured image for post and social media sharing"
+    properties:
+      path:
+        type: string
+        required: true
+        description: "Image file path relative to site root"
+        examples:
+          - "/assets/img/posts/2025-10-15-jekyll-blog.jpg"
+          - "/assets/img/posts/featured-image.webp"
+        validation:
+          pattern: "^/assets/img/.*\\.(jpg|jpeg|png|webp|gif)$"
+          error_message: "Image path must start with /assets/img/ and be a valid image format"
+      alt:
+        type: string
+        required: false
+        description: "Alternative text for accessibility"
+        constraints:
+          max_length: 125
+        examples:
+          - "Screenshot of Jekyll blog homepage with Chirpy theme"
+    notes:
+      - "Recommended size: 1200x630px for social media"
+      - "Use WebP format for smaller file size"
+
+  pin:
+    type: boolean
+    required: false
+    default: false
+    description: "Pin post to top of homepage"
+    examples:
+      - true
+      - false
+    notes:
+      - "Multiple pinned posts are sorted by date"
+      - "Use sparingly for important announcements"
+
+  math:
+    type: boolean
+    required: false
+    default: false
+    description: "Enable MathJax for mathematical formulas"
+    examples:
+      - true
+      - false
+    notes:
+      - "Use $...$ for inline math, $$...$$ for display math"
+      - "Requires MathJax library loading (impacts performance)"
+
+  mermaid:
+    type: boolean
+    required: false
+    default: false
+    description: "Enable Mermaid for diagrams and flowcharts"
+    examples:
+      - true
+      - false
+    notes:
+      - "Supports flowcharts, sequence diagrams, Gantt charts, etc."
+      - "Requires Mermaid library loading (impacts performance)"
+
+  toc:
+    type: boolean
+    required: false
+    default: true
+    description: "Display table of contents in sidebar"
+    examples:
+      - true
+      - false
+    notes:
+      - "Auto-generated from h2 and h3 headings"
+      - "Disable for short posts"
+
+  comments:
+    type: boolean
+    required: false
+    default: true
+    description: "Enable comments section"
+    examples:
+      - true
+      - false
+    notes:
+      - "Requires comments system configured in _config.yml"
+      - "Supports Disqus, Utterances, Giscus"
+
+  slug:
+    type: string
+    required: false
+    description: "Custom URL slug (overrides filename-based slug)"
+    default: "extracted from filename"
+    examples:
+      - "jekyll-blog-tutorial"
+      - "getting-started-with-python"
+    validation:
+      pattern: "^[a-z0-9-]+$"
+      error_message: "Slug should be lowercase alphanumeric with hyphens only"
+    notes:
+      - "Used for SEO-friendly URLs"
+      - "Defaults to filename without date prefix"
+
+# Complete example
+example:
+  minimal:
+    yaml: |
+      ---
+      title: "My First Post"
+      date: 2025-10-15 14:30:00 +0900
+      ---
+    description: "Minimal valid post with only required fields"
+
+  recommended:
+    yaml: |
+      ---
+      title: "Getting Started with Jekyll and Chirpy"
+      date: 2025-10-15 14:30:00 +0900
+      categories: [Blogging, Tutorial]
+      tags: [jekyll, chirpy, github-pages]
+      description: "Learn how to create a beautiful tech blog using Jekyll and Chirpy theme, and deploy it to GitHub Pages for free."
+      ---
+    description: "Recommended fields for better SEO and user experience"
+
+  full:
+    yaml: |
+      ---
+      title: "Advanced Jekyll: Custom Plugins and Liquid Filters"
+      date: 2025-10-15 14:30:00 +0900
+      categories: [Development, Jekyll]
+      tags: [jekyll, ruby, liquid, plugins]
+      author: john_doe
+      description: "Deep dive into creating custom Jekyll plugins and Liquid filters to extend your static site's functionality."
+      image:
+        path: /assets/img/posts/2025-10-15-jekyll-plugins.jpg
+        alt: "Jekyll plugin architecture diagram"
+      pin: false
+      math: true
+      mermaid: true
+      toc: true
+      comments: true
+      slug: advanced-jekyll-plugins
+      ---
+    description: "Full example with all optional fields"
+
+# Validation rules summary
+validation_rules:
+  file_naming:
+    pattern: "YYYY-MM-DD-title.md"
+    example: "2025-10-15-my-first-post.md"
+    description: "Post filename must start with date in YYYY-MM-DD format"
+    error_message: "Invalid filename format. Use YYYY-MM-DD-title.md"
+
+  front_matter_format:
+    format: "YAML"
+    delimiters: "---"
+    description: "Front matter must be valid YAML enclosed by triple-dash lines"
+    error_message: "Front matter must be valid YAML"
+
+  date_consistency:
+    rule: "Filename date should match Front Matter date"
+    severity: "warning"
+    note: "Jekyll uses filename date if there's a mismatch"
+
+# Error handling
+error_handling:
+  missing_required_field:
+    behavior: "Build fails"
+    action: "Add missing required field (title or date)"
+
+  invalid_date_format:
+    behavior: "Build fails"
+    action: "Use format YYYY-MM-DD HH:MM:SS +HHMM"
+
+  invalid_yaml_syntax:
+    behavior: "Build fails"
+    action: "Check YAML indentation and special characters"
+
+  undefined_author:
+    behavior: "Falls back to default author"
+    action: "Define author in _data/authors.yml or remove author field"
+
+  missing_image_file:
+    behavior: "Build succeeds, 404 in browser"
+    action: "Ensure image file exists at specified path"
+
+  future_date:
+    behavior: "Post excluded from build"
+    action: "Wait until publish date or change to past date"
+
+# Best practices
+best_practices:
+  - name: "Consistent category naming"
+    description: "Use title case for categories (e.g., 'Backend', not 'backend')"
+
+  - name: "Lowercase tags"
+    description: "Always use lowercase for tags to avoid duplicates"
+
+  - name: "SEO optimization"
+    description: "Always provide description (150-160 chars) for better search ranking"
+
+  - name: "Image optimization"
+    description: "Use WebP format and compress images to <500KB"
+
+  - name: "Slug customization"
+    description: "Use English slugs for better URL readability, even with Korean titles"
+
+  - name: "TOC for long posts"
+    description: "Keep toc:true for posts with 3+ sections"
+
+  - name: "Minimal feature flags"
+    description: "Only enable math/mermaid when needed to reduce page load time"
